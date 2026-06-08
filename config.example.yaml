@@ -1,0 +1,71 @@
+# config.yaml — Universal MCP Host
+# Copy this file to config.yaml and fill in your keys.
+# Run the host with: npm run host  or  node dist/host/index.js
+
+# Active provider — change this one line to switch LLMs
+provider: ollama
+
+providers:
+  ollama:
+    baseUrl: http://localhost:11434
+    model: qwen2.5:7b
+    options:
+      temperature: 0.7
+      num_ctx: 4096
+
+  openai:
+    apiKey: ${OPENAI_API_KEY}
+    model: gpt-4o-mini
+
+  anthropic:
+    apiKey: ${ANTHROPIC_API_KEY}
+    model: claude-sonnet-4-6
+    options:
+      maxTokens: 4096
+
+  groq:
+    apiKey: ${GROQ_API_KEY}
+    model: llama-3.3-70b-versatile
+
+  gemini:
+    apiKey: ${GEMINI_API_KEY}
+    model: gemini-2.0-flash
+
+  # LM Studio, vLLM, Together, Fireworks, or any OpenAI-compatible endpoint
+  openai-compat:
+    baseUrl: http://localhost:1234/v1
+    apiKey: lm-studio
+    model: local-model
+
+# MCP servers to connect to — same format as Claude Desktop's mcpServers config
+mcpServers:
+  # This server in stdio mode (fastest, no HTTP overhead)
+  trello:
+    command: node
+    args: ["dist/index.js"]
+    env:
+      TRELLO_API_KEY: ${TRELLO_API_KEY}
+      TRELLO_TOKEN: ${TRELLO_TOKEN}
+
+  # This server in remote HTTP mode (if running as a remote server)
+  # trello-remote:
+  #   type: http
+  #   url: http://localhost:3001/mcp
+  #   headers:
+  #     Authorization: Bearer ${MCP_AUTH_TOKEN}
+
+  # Other MCP servers
+  # filesystem:
+  #   command: npx
+  #   args: ["-y", "@modelcontextprotocol/server-filesystem", "/home/user"]
+
+  # postgres:
+  #   command: npx
+  #   args: ["-y", "@modelcontextprotocol/server-postgres"]
+  #   env:
+  #     DATABASE_URL: ${DATABASE_URL}
+
+agent:
+  systemPrompt: "You are a helpful assistant with access to Trello and other tools."
+  maxToolRounds: 10
+  toolTimeout: 30000

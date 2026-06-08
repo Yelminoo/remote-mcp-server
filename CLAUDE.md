@@ -23,7 +23,19 @@ TRANSPORT=http TRELLO_API_KEY=x TRELLO_TOKEN=x node dist/index.js
 set -a && source .env && set +a && node dist/index.js
 ```
 
-**Python agent (Ollama):**
+**Universal MCP Host (TypeScript REPL client):**
+```bash
+# Copy and configure
+cp config.example.yaml config.yaml
+# edit config.yaml — set provider, API keys via env vars
+
+# Run the interactive REPL (connects to any MCP server with any LLM)
+npm run host                          # uses config.yaml in cwd
+node dist/host/index.js -c config.yaml -p anthropic
+node dist/host/index.js --provider ollama --model llama3.1
+```
+
+**Python agent (Ollama, legacy):**
 ```bash
 pip install -r client/requirements.txt
 OLLAMA_MODEL=llama3.1 python client/agent.py
@@ -34,6 +46,48 @@ There are no tests. Verify changes by running the server and hitting endpoints w
 ---
 
 ## Architecture
+
+### Two halves: server + host
+
+This repo has two independent entry points compiled from `src/`:
+
+| Entry | Binary | Purpose |
+|---|---|---|
+| `src/index.ts` → `dist/index.js` | `node dist/index.js` | **MCP server** — exposes Trello tools |
+| `src/host/index.ts` → `dist/host/index.js` | `npm run host` / `umcp` | **Universal MCP Host** — REPL client connecting any LLM to any MCP server |
+
+### Universal MCP Host (`src/host/`)
+
+Provider-agnostic bridge between any LLM and any MCP server (stdio or HTTP).
+
+```
+src/host/
+├── index.ts          CLI entry point (REPL)
+├── factory.ts        builds the right LLMAdapter from config
+├── adapters/         one adapter per LLM provider
+│   ├── base.ts       ToolSchema, Message, ChatRequest/Response interfaces
+│   ├── anthropic.ts  Claude via Anthropic API (native fetch)
+│   ├── openai.ts     OpenAI + GroqAdapter + OpenAICompatAdapter
+│   ├── ollama.ts     local Ollama
+│   └── gemini.ts     Google Gemini (sanitizes schema — strips $schema/additionalProperties)
+├── mcp/
+│   ├── client.ts     low-level MCP connect + callTool (tries StreamableHTTP, falls back to SSE)
+│   └── registry.ts   tool registry + routing across multiple servers
+├── agent/
+│   └── loop.ts       agentic loop: LLM → tool calls → tool results → repeat
+└── config/
+    └── schema.ts     Zod-validated YAML config + ${ENV_VAR} interpolation
+```
+
+**Supported LLM providers:** `ollama`, `openai`, `anthropic`, `groq`, `gemini`, `openai-compat`
+
+**Config:** copy `config.example.yaml` → `config.yaml`. API keys loaded from env via `${VAR}` interpolation — never hardcode them.
+
+**Adding a new LLM provider:**
+1. Create `src/host/adapters/myprovider.ts` implementing `LLMAdapter`
+2. Export from `src/host/adapters/index.ts`
+3. Add a case in `src/host/factory.ts`
+4. Add config schema in `src/host/config/schema.ts`
 
 ### Two transports, one server
 
