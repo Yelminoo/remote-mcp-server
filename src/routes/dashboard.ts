@@ -190,6 +190,71 @@ function buildDashboard(serviceName: string): string {
       .ep-head>:nth-child(n+4),.ep-row>:nth-child(n+4){display:none}
       .tester-desc{display:none}
     }
+
+    /* ── Tool Builder ── */
+    .tb-actions { display:flex; align-items:center; gap:8px; }
+    .btn-sm { border:none; border-radius:7px; cursor:pointer; font-size:12px; font-weight:600; padding:5px 13px; transition:opacity .15s; }
+    .btn-sm:disabled { opacity:.4; cursor:not-allowed; }
+    .btn-sm-primary { background:var(--blue); color:#000; }
+    .btn-sm-primary:hover:not(:disabled) { opacity:.85; }
+    .btn-sm-ghost  { background:var(--surface2); border:1px solid var(--border); color:var(--text); }
+    .btn-sm-ghost:hover:not(:disabled)  { background:var(--border); }
+    .btn-sm-danger { background:#4d1010; border:1px solid var(--red); color:var(--red); }
+    .btn-sm-danger:hover:not(:disabled) { background:#6b1515; }
+
+    /* Tool list */
+    .tb-list { overflow:hidden; }
+    .tb-row { display:grid; grid-template-columns:88px 1fr 1fr 90px 100px; align-items:center; padding:10px 20px; border-bottom:1px solid rgba(48,54,61,.5); transition:background .12s; gap:8px; }
+    .tb-row:last-child { border-bottom:none; }
+    .tb-row:hover { background:var(--surface2); }
+    .tb-head { background:var(--surface2); border-bottom:1px solid var(--border); }
+    .tb-head span { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); }
+    .tb-name { font-family:var(--mono); font-size:12.5px; }
+    .tb-url  { font-family:var(--mono); font-size:11px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .tb-row-actions { display:flex; gap:6px; justify-content:flex-end; }
+    .tb-toggle { appearance:none; width:34px; height:18px; background:var(--border); border-radius:9px; cursor:pointer; position:relative; transition:background .2s; flex-shrink:0; }
+    .tb-toggle::after { content:''; position:absolute; top:3px; left:3px; width:12px; height:12px; border-radius:50%; background:#fff; transition:left .2s; }
+    .tb-toggle:checked { background:var(--green); }
+    .tb-toggle:checked::after { left:19px; }
+
+    /* Form */
+    .tb-form { padding:20px; border-top:1px solid var(--border); background:#0c1117; display:none; }
+    .tb-form.visible { display:block; }
+    .tb-form-title { font-size:14px; font-weight:600; margin-bottom:18px; }
+    .tb-section { margin-bottom:20px; }
+    .tb-section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+    .tb-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .tb-row-3 { display:grid; grid-template-columns:140px 1fr; gap:12px; }
+    .tb-field { margin-bottom:12px; }
+    .tb-label { display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); margin-bottom:5px; }
+    .tb-req { color:var(--red); margin-left:2px; }
+    .tb-input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:7px; color:var(--text); font-family:var(--mono); font-size:12px; padding:7px 10px; outline:none; transition:border-color .15s; }
+    .tb-input:focus { border-color:var(--blue); }
+    .tb-input::placeholder { color:var(--muted); opacity:.5; }
+    .tb-textarea { resize:vertical; min-height:72px; font-family:var(--font); font-size:13px; }
+    select.tb-input { cursor:pointer; }
+    .tb-hint { font-size:11px; color:var(--muted); margin-top:4px; }
+    .tb-err { font-size:11px; color:var(--red); margin-top:4px; display:none; }
+
+    /* KV rows (headers) */
+    .kv-row { display:grid; grid-template-columns:1fr 1fr 28px; gap:6px; margin-bottom:6px; align-items:center; }
+    .kv-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:14px; padding:2px 5px; border-radius:4px; }
+    .kv-del:hover { background:var(--surface2); color:var(--red); }
+
+    /* Param rows */
+    .param-row { display:grid; grid-template-columns:130px 90px 90px 40px 1fr 28px; gap:6px; margin-bottom:6px; align-items:center; }
+    .param-req-cell { display:flex; justify-content:center; }
+    .param-req-cb { width:15px; height:15px; cursor:pointer; accent-color:var(--blue); }
+
+    /* Options row */
+    .tb-opts { display:flex; gap:24px; flex-wrap:wrap; }
+    .tb-opt-item { display:flex; align-items:center; gap:7px; font-size:13px; cursor:pointer; }
+    .tb-opt-cb { width:15px; height:15px; cursor:pointer; accent-color:var(--blue); }
+
+    .tb-form-actions { display:flex; align-items:center; gap:10px; margin-top:18px; padding-top:16px; border-top:1px solid var(--border); }
+    .tb-feedback { font-size:13px; padding:7px 12px; border-radius:7px; display:none; }
+    .tb-feedback.ok  { background:#0a2415; color:var(--green); border:1px solid #1a4d2e; display:block; }
+    .tb-feedback.err { background:#260808; color:var(--red); border:1px solid #4d1010; display:block; }
   </style>
 </head>
 <body>
@@ -290,6 +355,109 @@ function buildDashboard(serviceName: string): string {
       <span class="badge" id="testerBadge">0 endpoints</span>
     </div>
     <div id="testerList"><div class="empty"><div class="empty-icon">&#8987;</div>Loading&#8230;</div></div>
+  </div>
+
+  <!-- ── Tool Builder ──────────────────────────────────────── -->
+  <div class="panel" id="tbPanel">
+    <div class="panel-header">
+      <span class="panel-title">&#128736; Tool Builder</span>
+      <div class="tb-actions">
+        <span class="badge" id="tbBadge">0 tools</span>
+        <button class="btn-sm btn-sm-primary" id="tbNewBtn">+ New Tool</button>
+      </div>
+    </div>
+
+    <!-- Tool list -->
+    <div id="tbListWrap">
+      <div class="tb-row tb-head">
+        <span>Method</span><span>Name</span><span>URL</span>
+        <span style="text-align:center">Enabled</span><span style="text-align:right">Actions</span>
+      </div>
+      <div id="tbList"><div class="empty"><div class="empty-icon">&#8987;</div>Loading&#8230;</div></div>
+    </div>
+
+    <!-- Create / Edit form -->
+    <div class="tb-form" id="tbForm">
+      <div class="tb-form-title" id="tbFormTitle">New Tool</div>
+
+      <!-- Basic info -->
+      <div class="tb-section">
+        <div class="tb-section-label">Identity</div>
+        <div class="tb-row-2">
+          <div class="tb-field">
+            <label class="tb-label">Tool Name<span class="tb-req">*</span></label>
+            <input class="tb-input" id="tbFName" placeholder="weather_get_current" autocomplete="off" />
+            <div class="tb-hint">Lowercase letters, digits, underscores. This is the MCP tool name.</div>
+            <div class="tb-err" id="tbFNameErr"></div>
+          </div>
+          <div class="tb-field">
+            <label class="tb-label">Title<span class="tb-req">*</span></label>
+            <input class="tb-input" id="tbFTitle" placeholder="Get Current Weather" autocomplete="off" />
+          </div>
+        </div>
+        <div class="tb-field">
+          <label class="tb-label">Description<span class="tb-req">*</span></label>
+          <textarea class="tb-input tb-textarea" id="tbFDesc" placeholder="What this tool does, when to use it, what it returns."></textarea>
+        </div>
+      </div>
+
+      <!-- HTTP -->
+      <div class="tb-section">
+        <div class="tb-section-label">HTTP Request</div>
+        <div class="tb-row-3">
+          <div class="tb-field">
+            <label class="tb-label">Method<span class="tb-req">*</span></label>
+            <select class="tb-input" id="tbFMethod">
+              <option>GET</option><option>POST</option><option>PUT</option>
+              <option>PATCH</option><option>DELETE</option>
+            </select>
+          </div>
+          <div class="tb-field">
+            <label class="tb-label">URL<span class="tb-req">*</span></label>
+            <input class="tb-input" id="tbFUrl" placeholder="https://api.example.com/users/{userId}" autocomplete="off" />
+            <div class="tb-hint">Use {name} for path parameters.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Headers -->
+      <div class="tb-section">
+        <div class="tb-section-label">Headers <span style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0">(optional — supports \${ENV_VAR})</span></div>
+        <div id="tbHeaders"></div>
+        <button class="btn-sm btn-sm-ghost" id="tbAddHeader" style="margin-top:4px">+ Add Header</button>
+      </div>
+
+      <!-- Parameters -->
+      <div class="tb-section">
+        <div class="tb-section-label">Parameters</div>
+        <div style="display:grid;grid-template-columns:130px 90px 90px 40px 1fr 28px;gap:6px;margin-bottom:8px">
+          <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Name</span>
+          <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Type</span>
+          <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Location</span>
+          <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;text-align:center">Req?</span>
+          <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Description</span>
+          <span></span>
+        </div>
+        <div id="tbParams"></div>
+        <button class="btn-sm btn-sm-ghost" id="tbAddParam" style="margin-top:4px">+ Add Parameter</button>
+      </div>
+
+      <!-- Options -->
+      <div class="tb-section">
+        <div class="tb-section-label">Hints &amp; Options</div>
+        <div class="tb-opts">
+          <label class="tb-opt-item"><input type="checkbox" class="tb-opt-cb" id="tbFReadOnly" checked /> Read-only (non-mutating)</label>
+          <label class="tb-opt-item"><input type="checkbox" class="tb-opt-cb" id="tbFDestructive" /> Destructive</label>
+          <label class="tb-opt-item"><input type="checkbox" class="tb-opt-cb" id="tbFEnabled" checked /> Enabled</label>
+        </div>
+      </div>
+
+      <div class="tb-feedback" id="tbFeedback"></div>
+      <div class="tb-form-actions">
+        <button class="btn-sm btn-sm-ghost" id="tbCancelBtn">Cancel</button>
+        <button class="btn-sm btn-sm-primary" id="tbSaveBtn">Save Tool</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -713,10 +881,245 @@ function buildDashboard(serviceName: string): string {
       document.getElementById('connBody').innerHTML=html;
     }
 
+    /* ── Tool Builder ───────────────────────── */
+    var tbTools = [];
+    var tbEditId = null;
+    var tbHeaders = [];   // [{key, val}]
+    var tbParams  = [];   // [{name, type, in, required, description}]
+
+    async function loadTbTools() {
+      try {
+        var r = await fetch(API + '/tools');
+        tbTools = await r.json();
+        renderTbList();
+      } catch(e) {
+        document.getElementById('tbList').innerHTML = '<div class="empty">Failed to load tools.</div>';
+      }
+    }
+
+    function renderTbList() {
+      setText('tbBadge', tbTools.length + ' tool' + (tbTools.length !== 1 ? 's' : ''));
+      var el = document.getElementById('tbList');
+      if (!tbTools.length) {
+        el.innerHTML = '<div class="empty"><div class="empty-icon">&#128736;</div>No custom tools yet. Click "+ New Tool" to create one.</div>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < tbTools.length; i++) {
+        var t = tbTools[i];
+        var toggleChecked = t.enabled ? ' checked' : '';
+        html += '<div class="tb-row">' +
+          '<div><span class="m-badge ' + methodCls(t.method) + '">' + esc(t.method) + '</span></div>' +
+          '<div class="tb-name">' + esc(t.name) + '</div>' +
+          '<div class="tb-url" title="' + esc(t.url) + '">' + esc(t.url) + '</div>' +
+          '<div style="display:flex;justify-content:center">' +
+            '<input type="checkbox" class="tb-toggle" data-id="' + esc(t.id) + '" data-enabled="' + (t.enabled?'1':'0') + '"' + toggleChecked + ' title="Toggle enabled" />' +
+          '</div>' +
+          '<div class="tb-row-actions">' +
+            '<button class="btn-sm btn-sm-ghost tb-edit-btn" data-id="' + esc(t.id) + '">Edit</button>' +
+            '<button class="btn-sm btn-sm-danger tb-del-btn" data-id="' + esc(t.id) + '">Del</button>' +
+          '</div>' +
+        '</div>';
+      }
+      el.innerHTML = html;
+      document.querySelectorAll('.tb-toggle').forEach(function(cb) {
+        cb.addEventListener('change', function() {
+          tbToggle(cb.getAttribute('data-id'), cb.checked);
+        });
+      });
+      document.querySelectorAll('.tb-edit-btn').forEach(function(b) {
+        b.addEventListener('click', function() { tbShowForm(b.getAttribute('data-id')); });
+      });
+      document.querySelectorAll('.tb-del-btn').forEach(function(b) {
+        b.addEventListener('click', function() { tbDelete(b.getAttribute('data-id')); });
+      });
+    }
+
+    async function tbToggle(id, enabled) {
+      try {
+        await fetch(API + '/tools/' + id, {
+          method: 'PUT',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ enabled: enabled }),
+        });
+        await loadTbTools();
+      } catch(e) { alert('Failed to toggle tool.'); }
+    }
+
+    async function tbDelete(id) {
+      var t = tbTools.find(function(x){return x.id===id;});
+      if (!t) return;
+      if (!confirm('Delete tool "' + t.name + '"? This cannot be undone.')) return;
+      try {
+        await fetch(API + '/tools/' + id, { method: 'DELETE' });
+        await loadTbTools();
+      } catch(e) { alert('Failed to delete tool.'); }
+    }
+
+    function tbShowForm(id) {
+      tbEditId = id || null;
+      var form = document.getElementById('tbForm');
+      var t = id ? tbTools.find(function(x){return x.id===id;}) : null;
+      document.getElementById('tbFormTitle').textContent = id ? 'Edit Tool' : 'New Tool';
+
+      // Populate fields
+      document.getElementById('tbFName').value    = t ? t.name        : '';
+      document.getElementById('tbFTitle').value   = t ? t.title       : '';
+      document.getElementById('tbFDesc').value    = t ? t.description : '';
+      document.getElementById('tbFMethod').value  = t ? t.method      : 'GET';
+      document.getElementById('tbFUrl').value     = t ? t.url         : '';
+      document.getElementById('tbFReadOnly').checked    = t ? t.readOnlyHint    : true;
+      document.getElementById('tbFDestructive').checked = t ? t.destructiveHint : false;
+      document.getElementById('tbFEnabled').checked     = t ? t.enabled         : true;
+
+      tbHeaders = t && t.headers ? Object.entries(t.headers).map(function(e){return{key:e[0],val:e[1]};}) : [];
+      tbParams  = t && t.params  ? t.params.map(function(p){return Object.assign({},p);}) : [];
+      renderTbHeaders();
+      renderTbParams();
+
+      document.getElementById('tbFeedback').className = 'tb-feedback';
+      document.getElementById('tbFNameErr').style.display = 'none';
+      form.classList.add('visible');
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function tbHideForm() {
+      document.getElementById('tbForm').classList.remove('visible');
+      tbEditId = null;
+      tbHeaders = [];
+      tbParams = [];
+    }
+
+    function renderTbHeaders() {
+      var el = document.getElementById('tbHeaders');
+      if (!tbHeaders.length) { el.innerHTML = ''; return; }
+      var html = '';
+      for (var i = 0; i < tbHeaders.length; i++) {
+        html += '<div class="kv-row">' +
+          '<input class="tb-input" data-hi="' + i + '" data-hf="key" value="' + esc(tbHeaders[i].key) + '" placeholder="Authorization" />' +
+          '<input class="tb-input" data-hi="' + i + '" data-hf="val" value="' + esc(tbHeaders[i].val) + '" placeholder="Bearer \${API_TOKEN}" />' +
+          '<button class="kv-del" data-hi="' + i + '">&#10005;</button>' +
+        '</div>';
+      }
+      el.innerHTML = html;
+      el.querySelectorAll('.tb-input[data-hi]').forEach(function(inp) {
+        inp.addEventListener('input', function() {
+          tbHeaders[+inp.getAttribute('data-hi')][inp.getAttribute('data-hf')] = inp.value;
+        });
+      });
+      el.querySelectorAll('.kv-del').forEach(function(b) {
+        b.addEventListener('click', function() {
+          tbHeaders.splice(+b.getAttribute('data-hi'), 1);
+          renderTbHeaders();
+        });
+      });
+    }
+
+    function renderTbParams() {
+      var el = document.getElementById('tbParams');
+      if (!tbParams.length) { el.innerHTML = ''; return; }
+      var html = '';
+      for (var i = 0; i < tbParams.length; i++) {
+        var p = tbParams[i];
+        html += '<div class="param-row">' +
+          '<input class="tb-input" data-pi="'+i+'" data-pf="name" value="'+esc(p.name)+'" placeholder="userId" />' +
+          '<select class="tb-input" data-pi="'+i+'" data-pf="type">' +
+            '<option'+(p.type==='string'?' selected':'')+'>string</option>' +
+            '<option'+(p.type==='number'?' selected':'')+'>number</option>' +
+            '<option'+(p.type==='boolean'?' selected':'')+'>boolean</option>' +
+          '</select>' +
+          '<select class="tb-input" data-pi="'+i+'" data-pf="in">' +
+            '<option'+(p.in==='path'?' selected':'')+'>path</option>' +
+            '<option'+(p.in==='query'?' selected':'')+'>query</option>' +
+            '<option'+(p.in==='body'?' selected':'')+'>body</option>' +
+            '<option'+(p.in==='header'?' selected':'')+'>header</option>' +
+          '</select>' +
+          '<div class="param-req-cell"><input type="checkbox" class="param-req-cb" data-pi="'+i+'" data-pf="required"'+(p.required?' checked':'')+' /></div>' +
+          '<input class="tb-input" data-pi="'+i+'" data-pf="description" value="'+esc(p.description)+'" placeholder="Description" />' +
+          '<button class="kv-del" data-pi="'+i+'">&#10005;</button>' +
+        '</div>';
+      }
+      el.innerHTML = html;
+      el.querySelectorAll('[data-pi]').forEach(function(inp) {
+        var event = inp.type === 'checkbox' ? 'change' : 'input';
+        inp.addEventListener(event, function() {
+          var idx = +inp.getAttribute('data-pi'), field = inp.getAttribute('data-pf');
+          tbParams[idx][field] = inp.type === 'checkbox' ? inp.checked : inp.value;
+        });
+      });
+      el.querySelectorAll('.kv-del').forEach(function(b) {
+        b.addEventListener('click', function() {
+          tbParams.splice(+b.getAttribute('data-pi'), 1);
+          renderTbParams();
+        });
+      });
+    }
+
+    async function tbSave() {
+      var btn = document.getElementById('tbSaveBtn');
+      var nameVal = document.getElementById('tbFName').value.trim();
+      var errEl = document.getElementById('tbFNameErr');
+
+      if (!/^[a-z][a-z0-9_]*$/.test(nameVal)) {
+        errEl.textContent = 'Must start with a lowercase letter; only letters, digits, underscores.';
+        errEl.style.display = 'block';
+        return;
+      }
+      errEl.style.display = 'none';
+
+      var headers = {};
+      tbHeaders.forEach(function(h){ if(h.key.trim()) headers[h.key.trim()] = h.val; });
+
+      var payload = {
+        name:            nameVal,
+        title:           document.getElementById('tbFTitle').value.trim(),
+        description:     document.getElementById('tbFDesc').value.trim(),
+        method:          document.getElementById('tbFMethod').value,
+        url:             document.getElementById('tbFUrl').value.trim(),
+        headers:         headers,
+        params:          tbParams.filter(function(p){ return p.name.trim(); }),
+        readOnlyHint:    document.getElementById('tbFReadOnly').checked,
+        destructiveHint: document.getElementById('tbFDestructive').checked,
+        enabled:         document.getElementById('tbFEnabled').checked,
+      };
+
+      btn.disabled = true; btn.textContent = 'Saving…';
+      var fbEl = document.getElementById('tbFeedback');
+      fbEl.className = 'tb-feedback';
+
+      try {
+        var url    = tbEditId ? API + '/tools/' + tbEditId : API + '/tools';
+        var method = tbEditId ? 'PUT' : 'POST';
+        var res = await fetch(url, { method: method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        var data = await res.json();
+        if (!res.ok) { fbEl.textContent = data.error || 'Save failed.'; fbEl.className = 'tb-feedback err'; return; }
+        fbEl.textContent = tbEditId ? 'Tool updated. Active on next MCP request.' : 'Tool created. Active on next MCP request.';
+        fbEl.className = 'tb-feedback ok';
+        await loadTbTools();
+        setTimeout(function(){ tbHideForm(); }, 1200);
+      } catch(e) {
+        fbEl.textContent = 'Network error.'; fbEl.className = 'tb-feedback err';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Save Tool';
+      }
+    }
+
+    document.getElementById('tbNewBtn').addEventListener('click', function(){ tbShowForm(null); });
+    document.getElementById('tbCancelBtn').addEventListener('click', tbHideForm);
+    document.getElementById('tbSaveBtn').addEventListener('click', tbSave);
+    document.getElementById('tbAddHeader').addEventListener('click', function(){
+      tbHeaders.push({ key: '', val: '' }); renderTbHeaders();
+    });
+    document.getElementById('tbAddParam').addEventListener('click', function(){
+      tbParams.push({ name: '', type: 'string', in: 'query', required: false, description: '' });
+      renderTbParams();
+    });
+
     /* ── Init ───────────────────────────────── */
     loadCredsStatus();
     loadConnInfo();
     renderTester();
+    loadTbTools();
     refresh();
     setInterval(refresh,5000);
   </script>

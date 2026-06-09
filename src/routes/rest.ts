@@ -4,6 +4,7 @@ import { get, post, put, del, sanitizePath } from "../services/api-client.js";
 import { metrics } from "../services/metrics.js";
 import { saveCredentials, getStatus } from "../services/credentials.js";
 import { logger } from "../services/logger.js";
+import { listTools, createTool, updateTool, deleteTool } from "../services/tool-store.js";
 
 // ─────────────────────────────────────────────
 // TRELLO REST ROUTER
@@ -269,6 +270,44 @@ export function createRestRouter(): Router {
       port,
       hasAuth: !!(process.env.MCP_AUTH_TOKEN?.trim()),
     });
+  });
+
+  // ── Custom Tool Builder ──────────────────────
+
+  // GET /api/tools
+  router.get("/tools", (_req, res) => {
+    res.json(listTools());
+  });
+
+  // POST /api/tools  { name, title, description, method, url, headers?, params?, ... }
+  router.post("/tools", (req, res) => {
+    try {
+      const tool = createTool(req.body);
+      res.status(201).json(tool);
+    } catch (err) {
+      const e = err as Error;
+      const status = e.message.includes("already in use") ? 409 : 400;
+      res.status(status).json({ error: e.message });
+    }
+  });
+
+  // PUT /api/tools/:id
+  router.put("/tools/:id", (req, res) => {
+    try {
+      const tool = updateTool(req.params.id, req.body);
+      res.json(tool);
+    } catch (err) {
+      const e = err as Error;
+      const status = e.message === "Tool not found" ? 404 : e.message.includes("already in use") ? 409 : 400;
+      res.status(status).json({ error: e.message });
+    }
+  });
+
+  // DELETE /api/tools/:id
+  router.delete("/tools/:id", (req, res) => {
+    const ok = deleteTool(req.params.id);
+    if (!ok) { res.status(404).json({ error: "Tool not found" }); return; }
+    res.status(204).send();
   });
 
   // ── Metrics (local) ──────────────────────────

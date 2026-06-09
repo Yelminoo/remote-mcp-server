@@ -7,9 +7,10 @@ import { SERVICE_NAME } from "./constants.js";
 import { getStatus } from "./services/credentials.js";
 import { logger } from "./services/logger.js";
 
-import { registerBoardTools } from "./tools/boards.js";
-import { registerListTools }  from "./tools/lists.js";
-import { registerCardTools }  from "./tools/cards.js";
+import { registerBoardTools }   from "./tools/boards.js";
+import { registerListTools }    from "./tools/lists.js";
+import { registerCardTools }    from "./tools/cards.js";
+import { registerDynamicTools } from "./tools/dynamic.js";
 import { analyticsMiddleware }  from "./middleware/analytics.js";
 import { createRestRouter }     from "./routes/rest.js";
 import { createDashboardRouter } from "./routes/dashboard.js";
@@ -33,6 +34,7 @@ function createServer(): McpServer {
   registerBoardTools(server);
   registerListTools(server);
   registerCardTools(server);
+  registerDynamicTools(server);
   return server;
 }
 
