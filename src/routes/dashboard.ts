@@ -587,7 +587,7 @@ function buildDashboard(serviceName: string): string {
         html+='<div class="form-group"><label class="form-label">API Key &mdash; <a href="https://trello.com/app-key" target="_blank" rel="noopener">trello.com/app-key</a></label>';
         html+='<div class="input-wrap"><input class="form-input" type="password" id="inputApiKey" autocomplete="off" placeholder="32-char hex key" />';
         html+='<button class="btn-eye" data-for="inputApiKey">&#128065;</button></div></div>';
-        html+='<div class="form-group"><label class="form-label">Token &mdash; <a href="https://trello.com/app-key" target="_blank" rel="noopener">click \'Generate a token\'</a></label>';
+        html+='<div class="form-group"><label class="form-label">Token &mdash; <a href="https://trello.com/app-key" target="_blank" rel="noopener">click &#39;Generate a token&#39;</a></label>';
         html+='<div class="input-wrap"><input class="form-input" type="password" id="inputToken" autocomplete="off" placeholder="64-char hex token" />';
         html+='<button class="btn-eye" data-for="inputToken">&#128065;</button></div></div>';
         html+='<div class="form-actions">';
