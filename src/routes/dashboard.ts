@@ -808,11 +808,11 @@ function buildDashboard(serviceName: string): string {
     function connBlock(title, url, configJson, codeId) {
       var urlRow = url
         ? '<div class="conn-url-row"><span class="conn-url-val">'+esc(url)+'</span>'+
-          '<button class="btn-copy" onclick="copyText(\''+esc(url)+'\',this)">Copy URL</button></div>'
+          '<button class="btn-copy" onclick="copyText(\\''+esc(url)+'\\'  ,this)">Copy URL</button></div>'
         : '';
       return '<div class="conn-block">'+
         '<div class="conn-block-title">'+esc(title)+
-          '<button class="btn-copy" onclick="copyCode(\''+codeId+'\',this)">Copy JSON</button>'+
+          '<button class="btn-copy" onclick="copyCode(\\''+codeId+'\\'  ,this)">Copy JSON</button>'+
         '</div>'+
         urlRow+
         '<pre class="conn-code" id="'+codeId+'">'+esc(configJson)+'</pre>'+
@@ -854,8 +854,8 @@ function buildDashboard(serviceName: string): string {
         var sseUrl=base+'/sse';
         var mcpUrl=base+'/mcp';
         var authHeader=info.hasAuth?',"headers":{"Authorization":"Bearer YOUR_MCP_AUTH_TOKEN"}':'';
-        var sseCfg='{\n  "mcpServers": {\n    "'+SVC+'": {\n      "url": "'+sseUrl+'"'+authHeader+'\n    }\n  }\n}';
-        var mcpCfg='{\n  "mcpServers": {\n    "'+SVC+'": {\n      "url": "'+mcpUrl+'"'+authHeader+'\n    }\n  }\n}';
+        var sseCfg='{\\n  "mcpServers": {\\n    "'+SVC+'": {\\n      "url": "'+sseUrl+'"'+authHeader+'\\n    }\\n  }\\n}';
+        var mcpCfg='{\\n  "mcpServers": {\\n    "'+SVC+'": {\\n      "url": "'+mcpUrl+'"'+authHeader+'\\n    }\\n  }\\n}';
         html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'+
           '<span style="font-size:13px;color:var(--muted)">Mode: <strong style="color:var(--text)">Remote (public)</strong></span>'+
           authHtml+'</div>';
@@ -865,13 +865,13 @@ function buildDashboard(serviceName: string): string {
         html+='</div>';
       } else if(info.transport==='http'){
         var localUrl='http://127.0.0.1:'+info.port+'/mcp';
-        var cfg='{\n  "mcpServers": {\n    "'+SVC+'": {\n      "url": "'+localUrl+'"\n    }\n  }\n}';
+        var cfg='{\\n  "mcpServers": {\\n    "'+SVC+'": {\\n      "url": "'+localUrl+'"\\n    }\\n  }\\n}';
         html+='<div style="margin-bottom:14px"><span style="font-size:13px;color:var(--muted)">Mode: <strong style="color:var(--text)">Local HTTP (Streamable HTTP, localhost only)</strong></span></div>';
         html+='<div class="conn-grid" style="grid-template-columns:1fr">';
         html+=connBlock('Claude Desktop / Cursor / MCP Inspector', localUrl, cfg, 'cc-http');
         html+='</div>';
       } else {
-        var stdioCfg='{\n  "mcpServers": {\n    "'+SVC+'": {\n      "command": "node",\n      "args": ["dist/index.js"]\n    }\n  }\n}';
+        var stdioCfg='{\\n  "mcpServers": {\\n    "'+SVC+'": {\\n      "command": "node",\\n      "args": ["dist/index.js"]\\n    }\\n  }\\n}';
         html+='<div style="margin-bottom:14px"><span style="font-size:13px;color:var(--muted)">Mode: <strong style="color:var(--text)">stdio (local process)</strong>  &mdash;  set <code style="font-family:var(--mono);background:var(--surface2);padding:1px 5px;border-radius:3px">TRANSPORT=remote</code> for remote access.</span></div>';
         html+='<div class="conn-grid" style="grid-template-columns:1fr">';
         html+=connBlock('Claude Desktop / Cursor (stdio)', null, stdioCfg, 'cc-stdio');
