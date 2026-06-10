@@ -9,10 +9,10 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "tsc --watch & sleep 2 && node dist/index.js",
+    "start": "node --dns-result-order=ipv4first dist/index.js",
+    "dev": "tsc --watch & sleep 2 && node --dns-result-order=ipv4first dist/index.js",
     "inspector": "npx @modelcontextprotocol/inspector node dist/index.js",
-    "host": "node dist/host/index.js"
+    "host": "node --dns-result-order=ipv4first dist/host/index.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.10.0",
